@@ -40,7 +40,7 @@ loginRouter.post('/', async (req: Request, res: Response) => {
         }
 
         // Generate an authentication token
-        const token = jwt.sign({ userId: user._id }, 'ichimoku', { expiresIn: '1h' });
+        const token = jwt.sign({ userId: user._id }, 'ichimoku', { expiresIn: '7d' });
 
         // Set the token as an HTTP-only cookie
         res.cookie('authToken', token, { httpOnly: true });
