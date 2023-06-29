@@ -44,7 +44,7 @@ authRouter.get('/', async (req: Request, res: Response) => {
         } catch (error) {
             if (error instanceof TokenExpiredError) {
                 // Token has expired
-                return res.status(401).json({ error: 'Token has expired' });
+                return res.status(403).json({ error: 'Token has expired' });
             } else {
                 // Token verification failed for other reasons
                 return res.status(401).json({ error: 'Invalid token' });
