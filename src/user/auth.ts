@@ -26,7 +26,6 @@ authRouter.get('/', async (req: Request, res: Response) => {
             const client = new MongoClient(uri);
 
             await client.connect();
-            console.log('Connected to MongoDB');
 
             // Access the users collection
             const db: Db = client.db(database);

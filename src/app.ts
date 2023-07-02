@@ -3,6 +3,8 @@ import userRouter from "./user";
 import cors from 'cors';
 import bodyParser from "body-parser";
 import cookieParser from 'cookie-parser';
+import strategiesRouter from "./strategies";
+import tradesRouter from "./trades";
 
 
 
@@ -27,6 +29,8 @@ app.use(
 
 // Use the user routes under the '/users' route
 app.use('/user', userRouter);
+app.use(`/strategies`, strategiesRouter)
+app.use(`/trades`, tradesRouter)
 app.get('/', (req, res) => {
     res.send('Server is running'); // Return a simple response indicating the server is running
 });
