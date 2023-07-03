@@ -10,7 +10,6 @@ strategiesMain.get('/',  async (req: AuthenticatedRequest, res: Response) => {
     try {
         // Access the user ID from the request object
         const userId = req.userId;
-
         await client.connect();
 
         const db: Db = client.db(database);
@@ -31,16 +30,13 @@ strategiesMain.post('/',  async (req: AuthenticatedRequest, res: Response) => {
         const userId = req.userId;
 
         // Extract the strategy data from the request body
-        const { name, description } = req.body;
-
 
 
         const strategy = {
-            user: new ObjectId(userId),
-            name,
-            description,
+            user: new ObjectId(userId)
         };
         await client.connect();
+
 
         const db: Db = client.db(database);
         // Insert the strategy document into the strategies collection

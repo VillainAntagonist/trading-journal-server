@@ -4,12 +4,13 @@ import {client, database} from "../variables";
 import {Db, ObjectId} from "mongodb";
 
 const strategiesSpecified = Router();
-strategiesSpecified.patch('/', async (req: AuthenticatedRequest, res: Response) => {
+strategiesSpecified.patch('/:id', async (req: AuthenticatedRequest, res: Response) => {
     try {
         const userId = req.userId;
         const strategyId = req.params.id;
 
         const updateFields = { ...req.body };
+
 
         // Remove the _id field from the updateFields object if it exists
         delete updateFields._id;
@@ -30,7 +31,7 @@ strategiesSpecified.patch('/', async (req: AuthenticatedRequest, res: Response) 
     }
 });
 
-strategiesSpecified.delete('/', async (req: AuthenticatedRequest, res: Response) => {
+strategiesSpecified.delete('/:id', async (req: AuthenticatedRequest, res: Response) => {
     try {
         const strategyId = req.params.id;
 
