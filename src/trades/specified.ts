@@ -40,7 +40,6 @@ tradesSpecified.delete('/', async (req: AuthenticatedRequest, res: Response) => 
             return res.status(404).json({ error: 'Trade not found' });
         }
 
-        // Return a success message as the response
         return res.status(200).json({ message: 'Trade deleted successfully' });
     } catch (error) {
         console.error('Error deleting trade', error);

@@ -44,5 +44,29 @@ tradesMain.post('/',  async (req: AuthenticatedRequest, res: Response) => {
     }
 });
 
+tradesMain.delete('/', async (req: AuthenticatedRequest, res: Response) => {
+    try {
+        const { tradeIds } = req.body;
+
+        // Convert tradeIds to an array of ObjectId
+        const objectIds = tradeIds.map((id:string) => new ObjectId(id));
+
+        const result = await db.collection('trades').deleteMany({
+            _id: { $in: objectIds },
+        });
+
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ error: 'Trades not found' });
+        }
+
+        // Return a success message as the response
+        return res.status(200).json({ message: 'Trades deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting trades', error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
 
 export default tradesMain;
