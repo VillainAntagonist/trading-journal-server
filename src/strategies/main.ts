@@ -48,7 +48,7 @@ strategiesMain.post('/',  async (req: AuthenticatedRequest, res: Response) => {
 
 strategiesMain.delete('/', async (req: AuthenticatedRequest, res: Response) => {
     try {
-        const { strategyIds } = req.body;
+        const  strategyIds  = req.body;
 
         // Convert strategyIds to an array of ObjectId
         const objectIds = strategyIds.map((id: string) => new ObjectId(id));

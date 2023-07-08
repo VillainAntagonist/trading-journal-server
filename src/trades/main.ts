@@ -46,7 +46,7 @@ tradesMain.post('/',  async (req: AuthenticatedRequest, res: Response) => {
 
 tradesMain.delete('/', async (req: AuthenticatedRequest, res: Response) => {
     try {
-        const { tradeIds } = req.body;
+        const tradeIds  = req.body;
 
         // Convert tradeIds to an array of ObjectId
         const objectIds = tradeIds.map((id:string) => new ObjectId(id));
