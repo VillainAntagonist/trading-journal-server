@@ -1,18 +1,17 @@
 import {Router, Response} from "express";
 import {AuthenticatedRequest} from "../types/request";
-import {Db, ObjectId} from "mongodb";
-import {client, database} from "../variables";
-require("dotenv").config();
+import {ObjectId} from "mongodb";
+import {db} from "../db";
 
 
 const strategiesMain = Router();
+
+
 strategiesMain.get('/',  async (req: AuthenticatedRequest, res: Response) => {
     try {
         // Access the user ID from the request object
         const userId = req.userId;
-        await client.connect();
 
-        const db: Db = client.db(database);
         // Access the strategies collection
         const strategies = await db.collection('strategies').find({ user: new ObjectId(userId) }).toArray();
 
@@ -35,10 +34,7 @@ strategiesMain.post('/',  async (req: AuthenticatedRequest, res: Response) => {
         const strategy = {
             user: new ObjectId(userId)
         };
-        await client.connect();
 
-
-        const db: Db = client.db(database);
         // Insert the strategy document into the strategies collection
         await db.collection('strategies').insertOne(strategy);
 

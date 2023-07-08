@@ -1,9 +1,10 @@
 import {Response, Router} from "express";
 import {AuthenticatedRequest} from "../types/request";
-import {client, database} from "../variables";
-import {Db, ObjectId} from "mongodb";
+import {ObjectId} from "mongodb";
+import {db} from "../db";
 
 const strategiesSpecified = Router();
+
 strategiesSpecified.patch('/:id', async (req: AuthenticatedRequest, res: Response) => {
     try {
         const userId = req.userId;
@@ -15,9 +16,6 @@ strategiesSpecified.patch('/:id', async (req: AuthenticatedRequest, res: Respons
         // Remove the _id field from the updateFields object if it exists
         delete updateFields._id;
 
-        await client.connect();
-
-        const db: Db = client.db(database);
         await db.collection('strategies').updateOne(
             { _id: new ObjectId(strategyId), user: new ObjectId(userId) },
             { $set: updateFields }
@@ -35,9 +33,6 @@ strategiesSpecified.delete('/:id', async (req: AuthenticatedRequest, res: Respon
     try {
         const strategyId = req.params.id;
 
-        await client.connect();
-
-        const db: Db = client.db(database);
         const result = await db.collection('strategies').deleteOne({
             _id: new ObjectId(strategyId),
         });

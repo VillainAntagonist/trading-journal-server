@@ -1,10 +1,11 @@
 import { Router, Request, Response } from 'express';
-import {MongoClient, Db, ObjectId} from 'mongodb';
+import {ObjectId} from 'mongodb';
 import jwt, {TokenExpiredError} from 'jsonwebtoken';
-require("dotenv").config();
+import {db} from "../db";
 
 
 const authRouter = Router();
+
 
 authRouter.get('/', async (req: Request, res: Response) => {
     try {
@@ -20,15 +21,7 @@ authRouter.get('/', async (req: Request, res: Response) => {
             const decodedToken = jwt.verify(authToken, 'ichimoku') as { userId: string };
             const userId = new ObjectId(decodedToken.userId);
 
-            // Connect to the MongoDB database
-            const uri = process.env.DB_URI || 'mongodb://localhost:27017';
-            const database = process.env.DB_NAME || '';
-            const client = new MongoClient(uri);
-
-            await client.connect();
-
             // Access the users collection
-            const db: Db = client.db(database);
             const collection = db.collection('users');
 
             // Find the user by ID
