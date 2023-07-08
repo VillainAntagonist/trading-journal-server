@@ -14,9 +14,9 @@ export const authenticate = (req: AuthenticatedRequest, res: Response, next: Nex
 
     try {
         // Verify and decode the authentication token using the secret key
-        const decodedToken = jwt.verify(authToken, 'ichimoku') as { _id: string };
+        const decodedToken = jwt.verify(authToken, 'ichimoku') as { userId: string };
         // Extract the user ID from the decoded token
-        const userId = decodedToken._id;
+        const userId = decodedToken.userId
         // Add the user ID to the request object
         req.userId = userId;
         next();

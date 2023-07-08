@@ -1,28 +1,17 @@
 import {Request, Response, Router} from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { MongoClient, Db } from 'mongodb';
-require("dotenv").config();
+import {db} from "../db";
 
 
 const loginRouter = Router();
-
 loginRouter.post('/', async (req: Request, res: Response) => {
 
     try {
         // Get the username and password from the request body
         const { username, password } = req.body;
 
-        // Connect to the MongoDB database
-        const uri = process.env.DB_URI || 'mongodb://localhost:27017';
-        const database = process.env.DB_NAME || "";
-        const client = new MongoClient(uri);
-
-        await client.connect();
-        console.log('Connected to MongoDB');
-
         // Access the users collection
-        const db: Db = client.db(database);
         const collection = db.collection('users');
 
         // Find the user by username
@@ -44,9 +33,6 @@ loginRouter.post('/', async (req: Request, res: Response) => {
 
         // Set the token as an HTTP-only cookie
         res.cookie('authToken', token, { httpOnly: true });
-
-        await client.close();
-        console.log('Disconnected from MongoDB');
 
         return res.status(200).json({ message: 'Login successful' });
     } catch (error) {

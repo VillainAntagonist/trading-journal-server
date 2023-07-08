@@ -8,7 +8,7 @@ const strategiesRouter = Router();
 // Apply authMiddleware to the entire strategiesRouter
 strategiesRouter.use(authenticate);
 strategiesRouter.use('/', strategiesMain)
-strategiesRouter.use('/:id', strategiesSpecified)
+strategiesRouter.use('/', strategiesSpecified)
 
 
 export default strategiesRouter;

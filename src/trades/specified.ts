@@ -1,9 +1,10 @@
 import {Response, Router} from "express";
 import {AuthenticatedRequest} from "../types/request";
-import {client, database} from "../variables";
-import {Db, ObjectId} from "mongodb";
+import {ObjectId} from "mongodb";
+import {db} from "../db";
 
 const tradesSpecified = Router();
+
 tradesSpecified.patch('/', async (req: AuthenticatedRequest, res: Response) => {
     try {
         const userId = req.userId;
@@ -14,9 +15,6 @@ tradesSpecified.patch('/', async (req: AuthenticatedRequest, res: Response) => {
         // Remove the _id field from the updateFields object if it exists
         delete updateFields._id;
 
-        await client.connect();
-
-        const db: Db = client.db(database);
         await db.collection('trades').updateOne(
             { _id: new ObjectId(tradeId), user: new ObjectId(userId) },
             { $set: updateFields }
@@ -34,9 +32,6 @@ tradesSpecified.delete('/', async (req: AuthenticatedRequest, res: Response) => 
     try {
         const tradeId = req.params.id;
 
-        await client.connect();
-
-        const db: Db = client.db(database);
         const result = await db.collection('trades').deleteOne({
             _id: new ObjectId(tradeId),
         });
@@ -45,7 +40,6 @@ tradesSpecified.delete('/', async (req: AuthenticatedRequest, res: Response) => 
             return res.status(404).json({ error: 'Trade not found' });
         }
 
-        // Return a success message as the response
         return res.status(200).json({ message: 'Trade deleted successfully' });
     } catch (error) {
         console.error('Error deleting trade', error);

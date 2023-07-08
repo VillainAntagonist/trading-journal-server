@@ -1,19 +1,16 @@
 import {Router, Response} from "express";
 import {AuthenticatedRequest} from "../types/request";
-import {Db, ObjectId} from "mongodb";
-import {client, database} from "../variables";
-require("dotenv").config();
+import {ObjectId} from "mongodb";
+import {db} from "../db";
 
 
 const tradesMain = Router();
+
 tradesMain.get('/',  async (req: AuthenticatedRequest, res: Response) => {
     try {
         // Access the user ID from the request object
         const userId = req.userId;
 
-        await client.connect();
-
-        const db: Db = client.db(database);
         // Access the strategies collection
         const trades = await db.collection('trades').find({ user: new ObjectId(userId) }).toArray();
 
@@ -38,9 +35,6 @@ tradesMain.post('/',  async (req: AuthenticatedRequest, res: Response) => {
             user: new ObjectId(userId),
 
         };
-        await client.connect();
-
-        const db: Db = client.db(database);
         await db.collection('trades').insertOne(trade);
 
         return res.status(201).json({ message: 'Trade created successfully' });
@@ -49,6 +43,30 @@ tradesMain.post('/',  async (req: AuthenticatedRequest, res: Response) => {
         return res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+tradesMain.delete('/', async (req: AuthenticatedRequest, res: Response) => {
+    try {
+        const { tradeIds } = req.body;
+
+        // Convert tradeIds to an array of ObjectId
+        const objectIds = tradeIds.map((id:string) => new ObjectId(id));
+
+        const result = await db.collection('trades').deleteMany({
+            _id: { $in: objectIds },
+        });
+
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ error: 'Trades not found' });
+        }
+
+        // Return a success message as the response
+        return res.status(200).json({ message: 'Trades deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting trades', error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 
 
 export default tradesMain;
