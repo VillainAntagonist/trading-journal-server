@@ -7,7 +7,7 @@ const tradesRouter = Router();
 
 tradesRouter.use(authenticate);
 tradesRouter.use('/', tradesMain)
-tradesRouter.use('/:id', tradesSpecified)
+tradesRouter.use('/', tradesSpecified)
 
 
 export default tradesRouter;
