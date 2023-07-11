@@ -5,7 +5,7 @@ import {db} from "../db";
 
 const tradesSpecified = Router();
 
-tradesSpecified.patch('/', async (req: AuthenticatedRequest, res: Response) => {
+tradesSpecified.patch('/:id', async (req: AuthenticatedRequest, res: Response) => {
     try {
         const userId = req.userId;
         const tradeId = req.params.id;
@@ -28,7 +28,7 @@ tradesSpecified.patch('/', async (req: AuthenticatedRequest, res: Response) => {
     }
 });
 
-tradesSpecified.delete('/', async (req: AuthenticatedRequest, res: Response) => {
+tradesSpecified.delete('/:id', async (req: AuthenticatedRequest, res: Response) => {
     try {
         const tradeId = req.params.id;
 
