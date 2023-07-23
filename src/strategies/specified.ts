@@ -29,6 +29,30 @@ strategiesSpecified.patch('/:id', async (req: AuthenticatedRequest, res: Respons
     }
 });
 
+strategiesSpecified.put('/:id', async (req: AuthenticatedRequest, res: Response) => {
+    try {
+        const userId = new ObjectId(req.userId);
+        const strategyId = req.params.id;
+
+        const updateFields = { ...req.body, user: userId };
+
+        // Remove the _id field from the updateFields object if it exists
+        delete updateFields._id;
+
+        await db.collection('strategies').replaceOne(
+            { _id: new ObjectId(strategyId), user: userId },
+            updateFields
+        );
+
+        // Return a success message as the response
+        return res.status(200).json({ message: 'Strategy updated successfully' });
+    } catch (error) {
+        console.error('Error updating strategy', error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
 strategiesSpecified.delete('/:id', async (req: AuthenticatedRequest, res: Response) => {
     try {
         const strategyId = req.params.id;

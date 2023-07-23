@@ -28,6 +28,30 @@ tradesSpecified.patch('/:id', async (req: AuthenticatedRequest, res: Response) =
     }
 });
 
+tradesSpecified.put('/:id', async (req: AuthenticatedRequest, res: Response) => {
+    try {
+        const userId = new ObjectId(req.userId);
+        const tradeId = req.params.id;
+
+        const updateFields = { ...req.body, user: userId };
+
+        // Remove the _id field from the updateFields object if it exists
+        delete updateFields._id;
+
+        await db.collection('trades').replaceOne(
+            { _id: new ObjectId(tradeId), user: userId },
+            updateFields
+        );
+
+        // Return a success message as the response
+        return res.status(200).json({ message: 'Trade updated successfully' });
+    } catch (error) {
+        console.error('Error updating trade', error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
 tradesSpecified.delete('/:id', async (req: AuthenticatedRequest, res: Response) => {
     try {
         const tradeId = req.params.id;
