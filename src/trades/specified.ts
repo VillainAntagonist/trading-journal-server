@@ -34,6 +34,16 @@ tradesSpecified.put('/:id', async (req: AuthenticatedRequest, res: Response) => 
         const tradeId = req.params.id;
 
         const updateFields = { ...req.body, user: userId };
+        // Calculate the 'pips' field based on the type, enter, and exit fields
+        if (updateFields.enter  && updateFields.exit  && updateFields.type) {
+            updateFields.pips =
+                updateFields.type === 'Short'
+                    ? updateFields.enter - updateFields.exit
+                    : updateFields.exit - updateFields.enter;
+        } else {
+            // If any of the required values is missing, set the 'pips' field to null
+            updateFields.pips = null;
+        }
 
         // Remove the _id field from the updateFields object if it exists
         delete updateFields._id;
