@@ -2,6 +2,7 @@ import {Response, Router} from "express";
 import {AuthenticatedRequest} from "../types/request";
 import {ObjectId} from "mongodb";
 import {db} from "../db";
+import {calculateResult} from "../utills/calculateResult";
 
 const tradesSpecified = Router();
 
@@ -34,15 +35,18 @@ tradesSpecified.put('/:id', async (req: AuthenticatedRequest, res: Response) => 
         const tradeId = req.params.id;
 
         const updateFields = { ...req.body, user: userId };
-        // Calculate the 'pips' field based on the type, enter, and exit fields
-        if (updateFields.enter  && updateFields.exit  && updateFields.type) {
-            updateFields.pips =
-                updateFields.type === 'Short'
-                    ? updateFields.enter - updateFields.exit
-                    : updateFields.exit - updateFields.enter;
+
+        const {enter, exit, type, symbol, size} = updateFields;
+
+        if (enter && exit && type && symbol && size) {
+            const {pips, net, result} = calculateResult(enter, exit, type, symbol, size)
+                updateFields.pips = pips;
+                updateFields.net = net
+            updateFields.result = result
         } else {
-            // If any of the required values is missing, set the 'pips' field to null
             updateFields.pips = null;
+            updateFields.net = null
+            updateFields. result = null
         }
 
         // Remove the _id field from the updateFields object if it exists
